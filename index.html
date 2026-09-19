@@ -61,6 +61,7 @@ a{color:var(--green-deep)}
 :focus-visible{outline:2px solid var(--green);outline-offset:3px}
 img{max-width:100%;height:auto;display:block}
 
+html{scroll-padding-top:5.5rem}
 .wrap{width:100%;max-width:var(--wide);margin-inline:auto;padding-inline:var(--pad)}
 section{padding-block:clamp(2.75rem,5.5vw,4.25rem)}
 .measure{max-width:var(--measure);margin-inline:auto}
@@ -266,7 +267,7 @@ form{background:var(--paper);border-radius:4px;padding:clamp(1.3rem,3.5vw,2rem)}
 }
 .ff textarea{min-height:84px;resize:vertical}
 form .btn{width:100%;margin-top:1.2rem}
-.formnote{font-size:.85rem;color:var(--grey);text-align:center;margin-top:.8rem}
+.formnote{font-size:.85rem;color:var(--grey);text-align:left;margin-top:.8rem;line-height:1.45}
 .done{display:none;text-align:center;padding:1.25rem .5rem}
 .done h3{color:var(--green);margin-bottom:.5rem}
 form.sent .fgrid,form.sent .btn,form.sent .formnote{display:none}
@@ -309,7 +310,7 @@ body{text-align:center}
 .vsl .cue{font-size:.97rem;color:var(--grey);margin:0 0 .65rem}
 .vsl .frame{
   position:relative;aspect-ratio:16/9;overflow:hidden;border-radius:3px;
-  background:var(--paper);border:1px dashed var(--rule);
+  background:var(--paper);border:1px solid var(--rule);
   display:flex;align-items:center;justify-content:center;
 }
 .vsl .frame iframe,.vsl .frame video{width:100%;height:100%;border:0;display:block}
@@ -450,6 +451,10 @@ body{text-align:center}
 .band-mist .readout .big dd{font-size:2.6rem}
 .band-mist .shift{margin-top:1rem;padding-top:1rem}
 .band-mist .fine{margin-top:.7rem;padding-top:.7rem;border-top:0}
+.calc-cta{
+  margin-top:1.35rem;padding-top:1.25rem;
+  border-top:1px solid var(--rule);
+}
 
 /* highlight */
 .hl{
@@ -463,9 +468,6 @@ body{text-align:center}
 .book ul{margin-top:.6rem;list-style:none;padding:0;display:inline-block;text-align:left}
 .book li{position:relative;padding:.5rem 0 .5rem 1.5rem;border-bottom:0;font-size:1rem}
 .book li::before{content:"";position:absolute;left:0;top:1.05em;width:.5rem;height:.5rem;background:var(--red);border-radius:50%}
-.formlead{margin-top:1.4rem;color:var(--ink);font-weight:600}
-.arw{color:var(--red);font-weight:700;margin:0 .35rem}
-
 /* ---------- case study ---------- */
 .band-stone{
   background:var(--stone);
@@ -562,7 +564,7 @@ body{text-align:center}
       <div class="btns">
         <a class="btn btn-red btn-lg" href="#book" data-book>Book My Free 97% Retention Review</a>
       </div>
-      <p class="cta-note">See what your numbers would look like at 97% on this 10 minute call</p>
+      <p class="cta-note">See what your numbers would look like at 97% in a 10 minute review</p>
     </div>
   </section>
 
@@ -694,7 +696,7 @@ body{text-align:center}
       <p>It takes just one onboarding session and a weekly call with Josh and your account management team.</p>
 
       <p>When you work with us, <span class="hl">we own the result of getting you to 97%</span>. That's our promise.</p>
-      <p>Click below to schedule your 97% Retention Review today and see if you qualify to work with us.</p>
+      <p>Start with a free 97% Retention Review. We'll tell you if it's a fit.</p>
       <div class="btns" style="margin-top:1.6rem">
         <a class="btn btn-red btn-lg" href="#book" data-book>Book My Free 97% Retention Review</a>
       </div>
@@ -735,13 +737,12 @@ body{text-align:center}
             <div class="row big"><dt>Revenue Recovered With Our System At 97% Retention</dt><dd id="o-gain">$173K</dd></div>
           </dl>
           <p class="shift"><strong>Remember:</strong> with our system, once you hit 97% retention, you will see added profit streams &mdash; upsells, referrals, intelligence, and more. Savings is just the start.</p>
-          <p class="fine" id="fine">Book a call below and we'll show you exactly how to make these savings a reality.</p>
+          <p class="fine" id="fine">A 97% Retention Review will show you exactly how to make these savings a reality.</p>
         </div>
       </div>
-    </div>
-
-    <div class="btns" style="margin-top:1.75rem">
-      <a class="btn btn-red btn-lg" href="#book" data-book>Book My Free 97% Retention Review</a>
+      <div class="btns calc-cta">
+        <a class="btn btn-red btn-lg" href="#book" data-book>Book My Free 97% Retention Review</a>
+      </div>
     </div>
    </div>
   </section>
@@ -788,7 +789,6 @@ body{text-align:center}
           <li>What every point below 97% retention is costing you</li>
           <li>The customer signals your team is most likely missing</li>
         </ul>
-        <p class="formlead"><span class="arw" aria-hidden="true">&#8595;</span> Fill out this form and book a free call today <span class="arw" aria-hidden="true">&#8595;</span></p>
       </div>
 
       <form id="review" novalidate>
@@ -802,7 +802,8 @@ body{text-align:center}
           <div class="ff full"><label for="f-note">Where retention stands right now</label><textarea id="f-note"></textarea></div>
         </div>
         <button class="btn btn-red" type="submit">Book My Free 97% Retention Review</button>
-                <div class="done" role="status"><h3>Got It.</h3><p>I'll be in touch within one business day to put ten minutes in the calendar.</p></div>
+        <p class="formnote">I'll reply within one business day to put ten minutes on the calendar.</p>
+        <div class="done" role="status"><h3>Got It.</h3><p>I'll be in touch within one business day to put ten minutes on the calendar.</p></div>
       </form>
     </div>
   </section>
@@ -848,7 +849,7 @@ var CONTACT_EMAIL = "josh@97retention.com";
   var oRisk = el("o-risk"), oGain = el("o-gain"), fine = el("fine");
 
   var BASE = fine.textContent;
-  var ABOVE = "You're already at or above the line, which is rare. Book a call and we'll show you how to compound it: expansion, referrals and reviews from a base that isn't going anywhere.";
+  var ABOVE = "You're already at or above the line, which is rare. A 97% Retention Review will show you how to compound it: expansion, referrals and reviews from a base that isn't going anywhere.";
 
   function money(n) {
     var a = Math.abs(n);
