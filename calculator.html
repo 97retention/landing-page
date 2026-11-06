@@ -1,0 +1,366 @@
+<!doctype html><html><head><meta charset=utf8><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.png" type="image/png" sizes="32x32"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Hidden Signals Churn Math</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=Public+Sans:wght@400;500;600&family=Source+Sans+3:wght@600&family=Source+Serif+4:opsz,wght@8..60,700&display=swap">
+<style>
+/* Layout: one narrow phone column — inputs on top, the four workbook lines as a stacked readout, then the "what if" comparison and the curve. */
+:root {
+  --bg: #f3f5f8;
+  --surface: #ffffff;
+  --ink: #15202c;
+  --muted: #5a6676;
+  --line: #d9dfe7;
+  --accent: #2f45c9;
+  --accent-soft: #e6e9fb;
+  --red: #c4372b;
+  --red-soft: #fbe9e7;
+  --green: #1f7a4a;
+  --green-soft: #e3f3ea;
+  --display: "Archivo", "Arial Narrow", system-ui, sans-serif;
+  --body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f141b; --surface: #18202b; --ink: #e8edf3; --muted: #9aa6b5; --line: #2a3442;
+    --accent: #8e9cff; --accent-soft: #232b52; --red: #ff8a7d; --red-soft: #3a1f1d;
+    --green: #6fd39c; --green-soft: #17331f; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f141b; --surface: #18202b; --ink: #e8edf3; --muted: #9aa6b5; --line: #2a3442;
+  --accent: #8e9cff; --accent-soft: #232b52; --red: #ff8a7d; --red-soft: #3a1f1d;
+  --green: #6fd39c; --green-soft: #17331f; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 40px;
+}
+main { max-width: 560px; margin: 0 auto; display: grid; gap: 20px; }
+h1, h2 { font-family: var(--display); font-stretch: 85%; text-wrap: balance; margin: 0; line-height: 1.1; }
+h1 { font-size: 2.1rem; font-weight: 800; letter-spacing: -0.01em; }
+h2 { font-size: 1.15rem; font-weight: 700; }
+p { margin: 0; }
+.eyebrow { font-family: var(--display); font-stretch: 100%; font-weight: 600; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+.lede { color: var(--muted); margin-top: 6px; }
+header { display: grid; gap: 4px; }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: grid; gap: 16px; }
+
+.seg { display: grid; grid-template-columns: 1fr 1fr; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 3px; gap: 3px; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg label { text-align: center; padding: 9px 6px; border-radius: 8px; font-weight: 600; font-size: 0.92rem; color: var(--muted); cursor: pointer; }
+.seg input:checked + label { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.12); }
+.seg input:focus-visible + label { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.fields { display: grid; gap: 14px; }
+.field { display: grid; gap: 6px; }
+.field label { font-weight: 600; font-size: 0.95rem; }
+.field .hint { font-size: 0.82rem; color: var(--muted); }
+.inputwrap { display: flex; align-items: center; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); overflow: hidden; }
+.inputwrap:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.inputwrap span { padding: 0 12px; color: var(--muted); font-weight: 600; }
+.inputwrap input { flex: 1; min-width: 0; border: 0; background: transparent; color: var(--ink); font: 600 1.25rem/1 var(--body); padding: 12px; font-variant-numeric: tabular-nums; }
+.inputwrap input:focus { outline: none; }
+.inputwrap span + input { padding-left: 0; }
+.error { color: var(--red); font-size: 0.88rem; font-weight: 600; }
+.example { font-size: 0.82rem; color: var(--muted); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.example button { font: 600 0.82rem var(--body); color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+
+.readout { display: grid; gap: 0; }
+.row { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: baseline; padding: 14px 0; border-top: 1px solid var(--line); }
+.row:first-child { border-top: 0; padding-top: 0; }
+.row .label { font-weight: 600; }
+.row .sub { display: block; font-size: 0.82rem; color: var(--muted); font-weight: 400; }
+.row .val { font-family: var(--display); font-stretch: 90%; font-weight: 800; font-size: 1.7rem; font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+.row.big .val { color: var(--red); font-size: 2.1rem; }
+
+.callout { border-radius: 10px; padding: 14px; background: var(--red-soft); color: var(--ink); font-size: 0.95rem; }
+.callout strong { color: var(--red); }
+
+.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.col { border-radius: 10px; padding: 12px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.col.now { background: var(--red-soft); }
+.col.goal { background: var(--green-soft); }
+.col h3 { margin: 0; font-family: var(--display); font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; }
+.col.now h3 { color: var(--red); }
+.col.goal h3 { color: var(--green); }
+.col dl { margin: 0; display: grid; gap: 8px; }
+.col dt { font-size: 0.78rem; color: var(--muted); }
+.col dd { margin: 0; font-family: var(--display); font-stretch: 90%; font-weight: 700; font-size: 1.25rem; font-variant-numeric: tabular-nums; }
+.slider { display: grid; gap: 6px; }
+.slider .top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-weight: 600; }
+.slider output { font-family: var(--display); font-weight: 800; font-size: 1.3rem; color: var(--green); font-variant-numeric: tabular-nums; }
+input[type=range] { width: 100%; accent-color: var(--green); }
+.win { background: var(--green-soft); border-radius: 10px; padding: 14px; font-size: 0.95rem; }
+.win strong { color: var(--green); }
+
+.chartwrap { overflow-x: auto; }
+svg { display: block; width: 100%; height: auto; }
+.legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 0.82rem; color: var(--muted); }
+.legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
+
+details { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; }
+summary { font-weight: 600; cursor: pointer; }
+details[open] summary { margin-bottom: 10px; }
+details p + p { margin-top: 10px; }
+table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; font-size: 0.92rem; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+th { color: var(--muted); font-weight: 600; font-size: 0.8rem; }
+.tablewrap { overflow-x: auto; margin-top: 10px; }
+footer { font-size: 0.8rem; color: var(--muted); text-align: center; }
+.brand { display: flex; align-items: center; gap: 0.55rem; max-width: 560px; margin: 0 auto 4px; width: fit-content; text-decoration: none; color: var(--ink); }
+.brand .mark { font-family: "Source Serif 4", Georgia, serif; font-weight: 700; color: #C63A31; font-size: 1.7rem; line-height: 1; letter-spacing: -0.03em; }
+.brand .word { font-family: "Source Sans 3", system-ui, sans-serif; font-weight: 600; font-size: 0.72rem; letter-spacing: 0.19em; text-transform: uppercase; color: var(--ink); }
+.brand:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<a class="brand" href="https://97retention.com" aria-label="97retention, home"><span class="mark">97%</span><span class="word">retention</span></a>
+<main>
+  <header>
+    <div class="eyebrow">Hidden Signals · Workbook page 1</div>
+    <h1>Your Churn Math</h1>
+    <p class="lede">Put in your numbers and see what churn is really costing you. Nothing you type leaves your phone.</p>
+  </header>
+
+  <section class="panel" aria-labelledby="in-h">
+    <h2 id="in-h">Your numbers</h2>
+    <div class="seg" role="radiogroup" aria-label="How do you want to enter churn?">
+      <input type="radio" name="mode" id="mode-count" value="count" checked>
+      <label for="mode-count">Count my clients</label>
+      <input type="radio" name="mode" id="mode-pct" value="pct">
+      <label for="mode-pct">I know my %</label>
+    </div>
+
+    <div class="fields">
+      <div class="field">
+        <label for="start">Clients at the start of last month</label>
+        <div class="inputwrap"><input id="start" type="number" inputmode="numeric" min="1" step="1" value="40"></div>
+      </div>
+      <div class="field" id="lost-field">
+        <label for="lost">Clients you lost last month</label>
+        <span class="hint">Clients who chose to leave, not projects that ended on schedule.</span>
+        <div class="inputwrap"><input id="lost" type="number" inputmode="numeric" min="0" step="1" value="3"></div>
+      </div>
+      <div class="field" id="pct-field" hidden>
+        <label for="pct">Monthly churn rate</label>
+        <div class="inputwrap"><input id="pct" type="number" inputmode="decimal" min="0" max="100" step="0.1" value="7.5"><span>%</span></div>
+      </div>
+      <div class="field">
+        <label for="rev">Average monthly revenue per client</label>
+        <div class="inputwrap"><span>$</span><input id="rev" type="number" inputmode="numeric" min="0" step="50" value="2250"></div>
+      </div>
+      <p class="error" id="err" role="alert" hidden></p>
+      <p class="example" id="example-note"><span>Example: a $90K/month agency at 7.5% churn. Replace with your numbers.</span><button type="button" id="clear">Clear</button></p>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="out-h" aria-live="polite">
+    <h2 id="out-h">What it adds up to</h2>
+    <div class="readout">
+      <div class="row"><span class="label">Monthly churn rate<span class="sub">Clients lost ÷ clients at start of month</span></span><span class="val" id="o-rate">–</span></div>
+      <div class="row"><span class="label">Average client lifetime<span class="sub">1 ÷ monthly churn</span></span><span class="val" id="o-life">–</span></div>
+      <div class="row"><span class="label">Clients you replace each year<span class="sub" id="o-share-sub">Just to stay flat</span></span><span class="val" id="o-clients">–</span></div>
+      <div class="row big"><span class="label">Revenue walking out the door<span class="sub">Each year</span></span><span class="val" id="o-rev">–</span></div>
+    </div>
+    <p class="callout" id="o-callout"></p>
+  </section>
+
+  <section class="panel" aria-labelledby="wi-h">
+    <h2 id="wi-h">What if you got churn down?</h2>
+    <div class="slider">
+      <div class="top"><label for="target">Target monthly churn</label><output id="target-out" for="target">1.8%</output></div>
+      <input type="range" id="target" min="0.5" max="10" step="0.1" value="1.8">
+      <span class="example">1.8% is where we ended up at the agency in the talk.</span>
+    </div>
+    <div class="compare">
+      <div class="col now">
+        <h3>Today</h3>
+        <dl>
+          <div><dt>Clients lost per year</dt><dd id="c-now-clients">–</dd></div>
+          <div><dt>Average lifetime</dt><dd id="c-now-life">–</dd></div>
+          <div><dt>Revenue lost per year</dt><dd id="c-now-rev">–</dd></div>
+        </dl>
+      </div>
+      <div class="col goal">
+        <h3>At target</h3>
+        <dl>
+          <div><dt>Clients lost per year</dt><dd id="c-goal-clients">–</dd></div>
+          <div><dt>Average lifetime</dt><dd id="c-goal-life">–</dd></div>
+          <div><dt>Revenue lost per year</dt><dd id="c-goal-rev">–</dd></div>
+        </dl>
+      </div>
+    </div>
+    <p class="win" id="o-win"></p>
+
+    <div>
+      <h2 style="font-size:1rem">Clients left over 12 months, with no new sales</h2>
+      <div class="chartwrap"><svg id="chart" viewBox="0 0 340 190" role="img" aria-label="Clients remaining each month at your churn rate and at the target"></svg></div>
+      <div class="legend"><span><i style="background:var(--red)"></i>Today</span><span><i style="background:var(--green)"></i>At target</span></div>
+    </div>
+  </section>
+
+  <details>
+    <summary>How the math works</summary>
+    <p>Churn compounds. Each month you lose a percentage of the clients you still have, so the loss shrinks a little as your book gets smaller. That's why 7.5% a month works out to about 61% a year, not 90%.</p>
+    <p>Clients lost per year = clients × (1 − (1 − monthly churn)<sup>12</sup>). Revenue walking out = clients lost per year × average monthly revenue × 12, the yearly value of the accounts you lose.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Monthly churn</th><th>Lost per year</th><th>Avg. lifetime</th></tr></thead>
+        <tbody id="lookup"></tbody>
+      </table>
+    </div>
+  </details>
+
+  <footer>97Retention - Josh Koeller</footer>
+</main>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var els = { start: $('start'), lost: $('lost'), pct: $('pct'), rev: $('rev'), target: $('target') };
+
+  function mode() { return document.querySelector('input[name=mode]:checked').value; }
+  function annualLost(c) { return 1 - Math.pow(1 - c, 12); }
+  function fmtPct(x, d) { return (x * 100).toFixed(d === undefined ? 1 : d).replace(/\.0$/, '') + '%'; }
+  function fmtMoney(x) {
+    if (!isFinite(x)) return '–';
+    if (x >= 1e6) return '$' + (x / 1e6).toFixed(2).replace(/0$/, '') + 'M';
+    if (x >= 1e4) return '$' + Math.round(x / 1e3) + 'K';
+    return '$' + Math.round(x).toLocaleString('en-US');
+  }
+  function fmtLife(c) {
+    if (c <= 0) return 'No churn';
+    var m = 1 / c;
+    if (m >= 24) return (m / 12).toFixed(1).replace(/\.0$/, '') + ' yrs';
+    return Math.round(m) + ' mo';
+  }
+  function fmtClients(x) { return x < 10 ? x.toFixed(1).replace(/\.0$/, '') : String(Math.round(x)); }
+
+  function readRate() {
+    var start = parseFloat(els.start.value);
+    if (!(start > 0)) return { err: 'Enter how many clients you had at the start of the month.' };
+    if (mode() === 'count') {
+      var lost = parseFloat(els.lost.value);
+      if (!(lost >= 0)) return { err: 'Enter how many clients you lost last month. Zero is fine.' };
+      if (lost > start) return { err: 'Clients lost can’t be more than clients you started with.' };
+      return { start: start, c: lost / start };
+    }
+    var p = parseFloat(els.pct.value);
+    if (!(p >= 0 && p <= 100)) return { err: 'Enter a monthly churn rate between 0 and 100.' };
+    return { start: start, c: p / 100 };
+  }
+
+  function drawChart(start, c, t) {
+    var svg = $('chart'), W = 340, H = 190, L = 38, R = 12, T = 10, B = 28;
+    var x = function (m) { return L + (W - L - R) * m / 12; };
+    var y = function (v) { return T + (H - T - B) * (1 - v / start); };
+    var out = '';
+    [0, 0.25, 0.5, 0.75, 1].forEach(function (f) {
+      var v = start * f;
+      out += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + y(v) + '" y2="' + y(v) + '" stroke="var(--line)" stroke-width="1"/>';
+      out += '<text x="' + (L - 6) + '" y="' + (y(v) + 4) + '" text-anchor="end" font-size="10" fill="var(--muted)">' + Math.round(v) + '</text>';
+    });
+    [0, 3, 6, 9, 12].forEach(function (m) {
+      out += '<text x="' + x(m) + '" y="' + (H - 8) + '" text-anchor="middle" font-size="10" fill="var(--muted)">' + (m === 0 ? 'Now' : 'Mo ' + m) + '</text>';
+    });
+    function path(rate) {
+      var d = '';
+      for (var m = 0; m <= 12; m++) d += (m ? 'L' : 'M') + x(m).toFixed(1) + ' ' + y(start * Math.pow(1 - rate, m)).toFixed(1);
+      return d;
+    }
+    out += '<path d="' + path(t) + '" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linejoin="round"/>';
+    out += '<path d="' + path(c) + '" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linejoin="round"/>';
+    var endC = start * Math.pow(1 - c, 12), endT = start * Math.pow(1 - t, 12);
+    out += '<circle cx="' + x(12) + '" cy="' + y(endT) + '" r="4" fill="var(--green)"/>';
+    out += '<circle cx="' + x(12) + '" cy="' + y(endC) + '" r="4" fill="var(--red)"/>';
+    var ly1 = y(endT) - 8, ly2 = y(endC) + 16;
+    if (ly2 - ly1 < 16) ly2 = ly1 + 16;
+    if (ly2 > H - B - 2) { ly2 = H - B - 2; }
+    out += '<text x="' + (x(12) - 8) + '" y="' + Math.max(T + 10, ly1) + '" text-anchor="end" font-size="11" font-weight="700" fill="var(--green)">' + Math.round(endT) + ' left</text>';
+    out += '<text x="' + (x(12) - 8) + '" y="' + ly2 + '" text-anchor="end" font-size="11" font-weight="700" fill="var(--red)">' + Math.round(endC) + ' left</text>';
+    svg.innerHTML = out;
+  }
+
+  function render() {
+    var r = readRate(), rev = parseFloat(els.rev.value) || 0;
+    var t = parseFloat(els.target.value) / 100;
+    $('target-out').textContent = fmtPct(t);
+    var err = $('err');
+    if (r.err) { err.textContent = r.err; err.hidden = false; return; }
+    err.hidden = true;
+    var start = r.start, c = r.c;
+    var lostYr = start * annualLost(c), lostT = start * annualLost(t);
+    var revYr = lostYr * rev * 12, revT = lostT * rev * 12;
+
+    $('o-rate').textContent = fmtPct(c);
+    $('o-life').textContent = fmtLife(c);
+    $('o-clients').textContent = fmtClients(lostYr);
+    $('o-share-sub').textContent = 'Just to stay flat · ' + fmtPct(annualLost(c), 0) + ' of your clients';
+    $('o-rev').textContent = rev > 0 ? fmtMoney(revYr) : 'Add revenue';
+
+    var keepOutOfTen = Math.round(annualLost(c) * 10);
+    $('o-callout').innerHTML = c <= 0
+      ? '<strong>No churn last month.</strong> Run this again next month, and check your Yellows anyway.'
+      : 'At this rate, about <strong>' + keepOutOfTen + ' out of every 10</strong> clients you have today will be gone a year from now' +
+        (rev > 0 ? ', taking <strong>' + fmtMoney(revYr) + '</strong> a year in revenue with them.' : '.');
+
+    $('c-now-clients').textContent = fmtClients(lostYr);
+    $('c-now-life').textContent = fmtLife(c);
+    $('c-now-rev').textContent = rev > 0 ? fmtMoney(revYr) : '–';
+    $('c-goal-clients').textContent = fmtClients(lostT);
+    $('c-goal-life').textContent = fmtLife(t);
+    $('c-goal-rev').textContent = rev > 0 ? fmtMoney(revT) : '–';
+
+    var win = $('o-win');
+    if (t >= c) {
+      win.innerHTML = 'Your churn is already at or below this target. Slide it lower to see what the next step is worth.';
+    } else {
+      var saved = lostYr - lostT;
+      win.innerHTML = 'Getting to ' + fmtPct(t) + ' keeps about <strong>' + fmtClients(saved) + ' more clients</strong> a year' +
+        (rev > 0 ? ', worth <strong>' + fmtMoney(revYr - revT) + '</strong> a year, without signing anyone new.' : '.');
+    }
+    drawChart(start, c, t);
+  }
+
+  function setMode() {
+    var m = mode();
+    $('lost-field').hidden = m !== 'count';
+    $('pct-field').hidden = m !== 'pct';
+    if (m === 'pct' && els.start.value && els.lost.value && parseFloat(els.start.value) > 0) {
+      els.pct.value = (100 * parseFloat(els.lost.value) / parseFloat(els.start.value)).toFixed(1).replace(/\.0$/, '');
+    }
+    render();
+  }
+
+  document.querySelectorAll('input[name=mode]').forEach(function (i) { i.addEventListener('change', setMode); });
+  ['start', 'lost', 'pct', 'rev', 'target'].forEach(function (k) {
+    els[k].addEventListener('input', function () {
+      if (k !== 'target') $('example-note').hidden = true;
+      render();
+    });
+  });
+  $('clear').addEventListener('click', function () {
+    els.start.value = ''; els.lost.value = ''; els.pct.value = ''; els.rev.value = '';
+    $('example-note').hidden = true;
+    ['o-rate', 'o-life', 'o-clients', 'o-rev'].forEach(function (id) { $(id).textContent = '–'; });
+    els.start.focus();
+    render();
+  });
+
+  var rows = '';
+  [0.01, 0.02, 0.03, 0.05, 0.075, 0.1].forEach(function (c) {
+    rows += '<tr><td>' + fmtPct(c) + '</td><td>' + fmtPct(annualLost(c), 0) + '</td><td>' + fmtLife(c) + '</td></tr>';
+  });
+  $('lookup').innerHTML = rows;
+
+  render();
+})();
+</script>
+
+</body></html>
