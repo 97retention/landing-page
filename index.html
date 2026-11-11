@@ -440,8 +440,14 @@ body{text-align:center}
   padding-top:clamp(1.35rem,3vw,1.85rem);
   border-top:1px solid var(--rule);
 }
+.roadmap > .measure{text-align:center}
 .roadmap-title{font-size:clamp(1.2rem,2.2vw,1.45rem);margin:0 0 .65rem}
-.roadmap-lede{font-size:.98rem;color:var(--grey);margin:0 0 clamp(1.5rem,3.5vw,2rem);max-width:36ch}
+.roadmap-lede{
+  font-size:.98rem;color:var(--grey);text-align:center;
+  margin:0 auto clamp(1.5rem,3.5vw,2rem);
+  max-width:min(46ch,100%);
+  text-wrap:balance;
+}
 .roadmap-phases{
   --roadmap-badge:2.35rem;
   list-style:none;margin:0;padding:0;
