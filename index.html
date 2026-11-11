@@ -480,18 +480,7 @@ body{text-align:center}
   }
 }
 .roadmap-phase{position:relative;z-index:1;margin:0}
-.roadmap-phase:not(:last-child)::after{
-  content:"";position:absolute;pointer-events:none;z-index:2;
-  top:calc(var(--roadmap-badge) / 2 - .45rem);
-  right:-.35rem;
-  width:.9rem;height:.9rem;
-  border-top:2px solid var(--green);
-  border-right:2px solid var(--green);
-  transform:rotate(45deg);
-  opacity:.55;
-}
 @media(max-width:860px){
-  .roadmap-phase:not(:last-child)::after{display:none}
   .roadmap-phase{padding-bottom:clamp(1.1rem,2.5vw,1.5rem)}
   .roadmap-phase:last-child{padding-bottom:0}
 }
@@ -530,13 +519,7 @@ body{text-align:center}
   font-size:.88rem;line-height:1.45;color:var(--grey);
   border-top:1px solid var(--rule);
 }
-.roadmap-phase li{
-  position:relative;padding:.32rem 0 .32rem 1rem;
-}
-.roadmap-phase li::before{
-  content:"";position:absolute;left:0;top:.62em;
-  width:5px;height:5px;border-radius:50%;background:var(--rule-ink);
-}
+.roadmap-phase li{padding:.32rem 0}
 
 /* ---------- letter: family photo + closing CTA ---------- */
 .family{margin:1.35rem auto 1.6rem;max-width:17rem}
