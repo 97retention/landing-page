@@ -296,6 +296,7 @@ body{text-align:center}
 .foot{justify-content:center;text-align:center}
 .letter .btns,
 #flywheel .btns,
+#get-started .btns,
 #numbers .btns{justify-content:center}
 
 #numbers .paper,
@@ -447,24 +448,21 @@ body{text-align:center}
 .formula-card-desc{
   margin:0;color:var(--phase-body);line-height:1.55;font-size:.88rem;
 }
-.flywheel-cta-wrap{
-  margin-top:clamp(2.5rem,5vw,3.5rem);
-  padding:clamp(1.25rem,3vw,1.85rem) clamp(1rem,3vw,1.5rem);
-  background:var(--mist);
+.get-started{
+  padding-block:clamp(2rem,4vw,3rem);
+  background:var(--page);
+}
+.get-started-box{
+  padding:clamp(1.35rem,3vw,1.9rem) clamp(1.1rem,3vw,1.65rem);
+  background:var(--stone);
   border-radius:4px;
+  text-align:center;
 }
-.flywheel-cta-rule{
-  border:0;height:2px;background:var(--rule-ink);
-  margin:0 0 clamp(1.1rem,2.5vw,1.45rem);opacity:.85;
-}
-.flywheel-cta-inner h3{font-size:clamp(1.35rem,2.4vw,1.7rem);margin:0 0 .75rem}
-.flywheel-cta-inner p{color:var(--grey);margin:0 0 1rem}
-.flywheel-cta-inner p:last-of-type{margin-bottom:0}
+.get-started-box h3{font-size:clamp(1.35rem,2.4vw,1.7rem);margin:0 0 .75rem}
+.get-started-box p{color:var(--grey);margin:0 0 1rem}
+.get-started-box p:last-of-type{margin-bottom:0}
 
 .roadmap{
-  margin-top:clamp(2.25rem,4.5vw,3.15rem);
-  padding-top:clamp(1.35rem,3vw,1.85rem);
-  border-top:1px solid var(--rule);
   text-align:center;
 }
 .roadmap-inner{
@@ -501,7 +499,7 @@ body{text-align:center}
   line-height:1.2;margin:0 0 .5rem;color:var(--ink);
 }
 .roadmap-card-tag{
-  margin:0 0 .85rem;font-weight:600;color:var(--green);line-height:1.35;
+  margin:0 0 1rem;font-weight:600;color:var(--green);line-height:1.35;
   font-size:1rem;
 }
 .roadmap-card-desc{
@@ -820,12 +818,17 @@ body{text-align:center}
     </figure>
 
 
-    <section class="roadmap" id="roadmap" aria-labelledby="roadmap-heading">
+  </section>
+
+  <!-- ============ ROADMAP ============ -->
+  <section class="band-mist" id="roadmap" aria-labelledby="roadmap-heading">
+    <div class="wrap">
+    <div class="roadmap">
       <div class="roadmap-inner">
         <h2 class="roadmap-h2" id="roadmap-heading">The Roadmap to <span class="red">97%</span></h2>
-        <p class="roadmap-intro">I install the formula in three phases. First we build the foundation, then your team goes proactive, then that trust turns into profit. Each phase builds on the one before it.</p>
+        <p class="roadmap-intro">I install the formula in 3 phases to ensure 97% retention and beyond.</p>
         <figure class="roadmap-diagram">
-          <img src="media/roadmap-97.png" width="1024" height="473" alt="The roadmap as three rising steps: Foundation, Transformation and Profitability, with the 97% flag planted where Profitability begins. An arrow underneath runs from Reactive to Proactive.">
+          <img src="media/roadmap-97.png" width="1024" height="473" alt="The roadmap as three rising steps: Foundation, Transformation and Profitability, with the 97% flag planted on the first ledge of Profitability. An arrow underneath runs from Reactive to Proactive.">
         </figure>
         <ol class="roadmap-cards phase-cards-grid">
           <li class="roadmap-card phase-card-shell">
@@ -833,7 +836,6 @@ body{text-align:center}
             <p class="roadmap-card-phase">Phase 1</p>
             <h3 class="roadmap-card-title">Foundation</h3>
             <p class="roadmap-card-tag">Know your real numbers.</p>
-            <p class="roadmap-card-desc">We find exactly where customers are slipping away, then give your team the training and the dashboard to see it for themselves.</p>
             <hr class="roadmap-card-rule" aria-hidden="true">
             <ul class="roadmap-card-items">
               <li>Complete Retention Audit</li>
@@ -848,7 +850,6 @@ body{text-align:center}
             <p class="roadmap-card-phase">Phase 2</p>
             <h3 class="roadmap-card-title">Transformation</h3>
             <p class="roadmap-card-tag">Go proactive.</p>
-            <p class="roadmap-card-desc">Your Account Managers stop reacting and start acting on signals, and they get paid for the results they create. This is the climb to 97%.</p>
             <hr class="roadmap-card-rule" aria-hidden="true">
             <ul class="roadmap-card-items">
               <li>Intelligence &amp; Signals Flow</li>
@@ -864,7 +865,6 @@ body{text-align:center}
             <p class="roadmap-card-phase">Phase 3</p>
             <h3 class="roadmap-card-title">Profitability</h3>
             <p class="roadmap-card-tag">Turn trust into profit.</p>
-            <p class="roadmap-card-desc">Once you&apos;re at <span class="red">97%</span>, your team turns that trust into growth from the customers you already have, without adding headcount.</p>
             <hr class="roadmap-card-rule" aria-hidden="true">
             <ul class="roadmap-card-items">
               <li>NPS &amp; CSAT Cadence</li>
@@ -878,22 +878,22 @@ body{text-align:center}
         </ol>
         <p class="roadmap-close">Every business moves at its own pace, but nobody skips a phase. That&apos;s why the results hold.</p>
       </div>
-    </section>
+    </div>
+    </div>
+  </section>
 
-    <div class="flywheel-cta-wrap measure">
-      <hr class="flywheel-cta-rule" aria-hidden="true">
-      <div class="flywheel-cta-inner">
-        <h3>Get Started Today</h3>
-        <p>Getting started is easy, no matter your business's size.</p>
-        <p>It takes just one onboarding session and a weekly call with me and your account management team.</p>
-        <p>When you work with me, <span class="hl">I own the result of getting you to 97%</span>. That's my promise.</p>
+  <section class="get-started" aria-labelledby="get-started-heading">
+    <div class="wrap">
+      <div class="get-started-box measure">
+        <h3 id="get-started-heading">Get Started Today</h3>
+        <p>Getting started is easy, no matter your agency&apos;s size.</p>
+        <p>I coach your team personally, weekly, and <span class="hl">I own the result of getting you to 97% and beyond. That&apos;s my promise.</span></p>
         <p>Click below to schedule your 97% Retention Review with me today and see if you qualify to work with me and my team.</p>
         <div class="btns" style="margin-top:1.6rem">
           <a class="btn btn-green btn-lg" href="#book" data-book>Book Your 97% Retention Review with Josh</a>
         </div>
       </div>
     </div>
-
   </section>
 
   <!-- ============ CALCULATOR ============ -->
