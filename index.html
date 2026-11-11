@@ -441,22 +441,102 @@ body{text-align:center}
   border-top:1px solid var(--rule);
 }
 .roadmap-title{font-size:clamp(1.2rem,2.2vw,1.45rem);margin:0 0 .65rem}
-.roadmap-lede{font-size:.98rem;color:var(--grey);margin:0 0 clamp(1.35rem,3vw,1.75rem);max-width:36ch}
+.roadmap-lede{font-size:.98rem;color:var(--grey);margin:0 0 clamp(1.5rem,3.5vw,2rem);max-width:36ch}
 .roadmap-phases{
+  --roadmap-badge:2.35rem;
+  list-style:none;margin:0;padding:0;
   display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:clamp(1.25rem,2.5vw,2rem);margin:0;padding:0;list-style:none;
+  gap:clamp(.65rem,1.5vw,1.1rem);
+  position:relative;
 }
-@media(max-width:860px){.roadmap-phases{grid-template-columns:1fr;gap:1.5rem}}
-.roadmap-phase{border-top:1px solid var(--rule-ink);padding-top:.95rem}
+.roadmap-phases::before{
+  content:"";position:absolute;z-index:0;pointer-events:none;
+  top:calc(var(--roadmap-badge) / 2 - 1px);
+  left:calc(16.66% + var(--roadmap-badge) / 2);
+  right:calc(16.66% + var(--roadmap-badge) / 2);
+  height:2px;
+  background:repeating-linear-gradient(
+    90deg,
+    var(--rule) 0,var(--rule) 6px,
+    transparent 6px,transparent 11px
+  );
+  opacity:.95;
+}
+@media(max-width:860px){
+  .roadmap-phases{
+    grid-template-columns:1fr;gap:0;
+    padding-left:calc(var(--roadmap-badge) + .85rem);
+  }
+  .roadmap-phases::before{
+    top:calc(var(--roadmap-badge) / 2);
+    bottom:calc(var(--roadmap-badge) / 2);
+    left:calc(var(--roadmap-badge) / 2 - 1px);
+    right:auto;width:2px;height:auto;
+    background:repeating-linear-gradient(
+      180deg,
+      var(--rule) 0,var(--rule) 6px,
+      transparent 6px,transparent 11px
+    );
+  }
+}
+.roadmap-phase{position:relative;z-index:1;margin:0}
+.roadmap-phase:not(:last-child)::after{
+  content:"";position:absolute;pointer-events:none;z-index:2;
+  top:calc(var(--roadmap-badge) / 2 - .45rem);
+  right:-.35rem;
+  width:.9rem;height:.9rem;
+  border-top:2px solid var(--green);
+  border-right:2px solid var(--green);
+  transform:rotate(45deg);
+  opacity:.55;
+}
+@media(max-width:860px){
+  .roadmap-phase:not(:last-child)::after{display:none}
+  .roadmap-phase{padding-bottom:clamp(1.1rem,2.5vw,1.5rem)}
+  .roadmap-phase:last-child{padding-bottom:0}
+}
+.roadmap-station{
+  height:100%;
+  background:var(--mist);
+  border:1px solid var(--rule);
+  border-radius:4px;
+  padding:clamp(.95rem,2.2vw,1.2rem) clamp(.85rem,2vw,1.05rem) clamp(1rem,2.2vw,1.15rem);
+}
+.roadmap-num{
+  display:flex;align-items:center;justify-content:center;
+  width:var(--roadmap-badge);height:var(--roadmap-badge);
+  margin:0 auto .65rem;
+  border-radius:50%;
+  font-family:var(--serif);font-weight:700;font-size:1.05rem;
+  color:#fff;background:var(--green);
+  box-shadow:0 0 0 3px var(--page),0 0 0 4px rgba(46,122,85,.22);
+}
+@media(max-width:860px){
+  .roadmap-num{
+    position:absolute;
+    left:calc(-1 * (var(--roadmap-badge) + .85rem));
+    top:1rem;margin:0;
+  }
+  .roadmap-station{margin-left:0}
+}
 .roadmap-phase .phase-label{
-  font-family:var(--serif);font-weight:600;color:var(--grey);
-  font-size:.92rem;margin:0 0 .5rem;
+  font-family:var(--serif);font-weight:600;color:var(--ink);
+  font-size:clamp(1rem,1.5vw,1.12rem);line-height:1.25;
+  margin:0 0 .75rem;text-align:center;
 }
+@media(max-width:860px){.roadmap-phase .phase-label{text-align:left}}
 .roadmap-phase ul{
-  list-style:none;margin:0;padding:0;font-size:.9rem;line-height:1.5;color:var(--grey);
+  list-style:none;margin:0;padding:.75rem 0 0;
+  font-size:.88rem;line-height:1.45;color:var(--grey);
+  border-top:1px solid var(--rule);
 }
-.roadmap-phase li{padding:.35rem 0;border-bottom:1px solid var(--rule)}
-.roadmap-phase li:last-child{border-bottom:0;padding-bottom:0}
+.roadmap-phase li{
+  position:relative;padding:.32rem 0 .32rem 1rem;
+}
+.roadmap-phase li::before{
+  content:"";position:absolute;left:0;top:.62em;
+  width:5px;height:5px;border-radius:50%;background:var(--rule-ink);
+}
 
 /* ---------- letter: family photo + closing CTA ---------- */
 .family{margin:1.35rem auto 1.6rem;max-width:17rem}
@@ -739,41 +819,52 @@ body{text-align:center}
     </figure>
 
 
-    <section class="roadmap measure" aria-labelledby="roadmap-heading">
-      <h3 class="roadmap-title" id="roadmap-heading">The roadmap — how I install this system</h3>
-      <p class="roadmap-lede">I roll this out in three phases so your team builds the foundation, transforms how they work, and turns retention into profit.</p>
-      <ol class="roadmap-phases">
+    <section class="roadmap" aria-labelledby="roadmap-heading">
+      <div class="measure">
+        <h3 class="roadmap-title" id="roadmap-heading">The roadmap — how I install this system</h3>
+        <p class="roadmap-lede">I roll this out in three phases so your team builds the foundation, transforms how they work, and turns retention into profit.</p>
+      </div>
+      <ol class="roadmap-phases" aria-label="Installation phases">
         <li class="roadmap-phase">
-          <p class="phase-label">Phase 1: Foundation</p>
-          <ul>
-            <li>Complete Retention Audit</li>
-            <li>Churn Prevention Training</li>
-            <li>Dashboard Set-up (KPI Tracking)</li>
-            <li>Customer System Revitalization</li>
-            <li>7 Signals Training</li>
-          </ul>
+          <div class="roadmap-station">
+            <span class="roadmap-num" aria-hidden="true">1</span>
+            <p class="phase-label">Phase 1: Foundation</p>
+            <ul>
+              <li>Complete Retention Audit</li>
+              <li>Churn Prevention Training</li>
+              <li>Dashboard Set-up (KPI Tracking)</li>
+              <li>Customer System Revitalization</li>
+              <li>7 Signals Training</li>
+            </ul>
+          </div>
         </li>
         <li class="roadmap-phase">
-          <p class="phase-label">Phase 2: Transformation</p>
-          <ul>
-            <li>Intelligence &amp; Signals Flow</li>
-            <li>Objective Health Scores</li>
-            <li>Commission Plan</li>
-            <li>Shift to Proactive</li>
-            <li>Success Plans</li>
-            <li>QVRs</li>
-          </ul>
+          <div class="roadmap-station">
+            <span class="roadmap-num" aria-hidden="true">2</span>
+            <p class="phase-label">Phase 2: Transformation</p>
+            <ul>
+              <li>Intelligence &amp; Signals Flow</li>
+              <li>Objective Health Scores</li>
+              <li>Commission Plan</li>
+              <li>Shift to Proactive</li>
+              <li>Success Plans</li>
+              <li>QVRs</li>
+            </ul>
+          </div>
         </li>
         <li class="roadmap-phase">
-          <p class="phase-label">Phase 3: Profitability</p>
-          <ul>
-            <li>NPS &amp; CSAT Cadence</li>
-            <li>Referrals</li>
-            <li>Reviews</li>
-            <li>Testimonials</li>
-            <li>Expansion</li>
-            <li>CSM Efficiency</li>
-          </ul>
+          <div class="roadmap-station">
+            <span class="roadmap-num" aria-hidden="true">3</span>
+            <p class="phase-label">Phase 3: Profitability</p>
+            <ul>
+              <li>NPS &amp; CSAT Cadence</li>
+              <li>Referrals</li>
+              <li>Reviews</li>
+              <li>Testimonials</li>
+              <li>Expansion</li>
+              <li>CSM Efficiency</li>
+            </ul>
+          </div>
         </li>
       </ol>
     </section>
