@@ -439,93 +439,84 @@ body{text-align:center}
   margin-top:clamp(2.25rem,4.5vw,3.15rem);
   padding-top:clamp(1.35rem,3vw,1.85rem);
   border-top:1px solid var(--rule);
+  text-align:center;
+  --roadmap-body:#4A4F52;
+  --roadmap-card:#F4F2EC;
+  --roadmap-card-border:#E4E0D6;
 }
-.roadmap > .measure{text-align:center}
-.roadmap-title{font-size:clamp(1.2rem,2.2vw,1.45rem);margin:0 0 .65rem}
-.roadmap-lede{
-  font-size:.98rem;color:var(--grey);text-align:center;
-  margin:0 auto clamp(1.5rem,3.5vw,2rem);
-  max-width:min(46ch,100%);
+.roadmap-inner{
+  max-width:65rem;margin:0 auto;
+  display:flex;flex-direction:column;align-items:center;
+}
+.roadmap-h2{margin:0 0 1.1rem;text-align:center}
+.roadmap-intro{
+  max-width:42.5rem;margin:0 auto clamp(1.5rem,3.5vw,2.25rem);
+  color:var(--roadmap-body);line-height:1.6;text-align:center;
+  font-size:1rem;text-wrap:balance;
+}
+.roadmap-diagram{
+  margin:0 auto clamp(1.75rem,4vw,2.5rem);max-width:45rem;width:100%;
+}
+.roadmap-diagram img{
+  display:block;width:100%;height:auto;margin:0 auto;
+  max-width:45rem;
+}
+.roadmap-cards{
+  list-style:none;margin:0;padding:0;width:100%;
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:20px;text-align:left;
+}
+@media(max-width:860px){
+  .roadmap-cards{grid-template-columns:1fr}
+}
+.roadmap-card{
+  display:flex;flex-direction:column;height:100%;
+  background:var(--roadmap-card);border:1px solid var(--roadmap-card-border);
+  border-radius:6px;padding:28px;
+}
+.roadmap-card-num{
+  display:flex;align-items:center;justify-content:center;
+  width:36px;height:36px;border-radius:50%;
+  font-family:var(--serif);font-weight:700;font-size:1rem;
+  color:#fff;background:#2E7A55;margin:0 0 .65rem;
+}
+.roadmap-card-phase{
+  margin:0 0 .35rem;font-size:.8rem;font-weight:600;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--grey);
+}
+.roadmap-card-title{
+  font-family:var(--serif);font-weight:600;font-size:1.625rem;
+  line-height:1.2;margin:0 0 .5rem;color:var(--ink);
+}
+.roadmap-card-tag{
+  margin:0 0 .85rem;font-weight:600;color:#2E7A55;line-height:1.35;
+  font-size:1rem;
+}
+.roadmap-card-desc{
+  margin:0;color:var(--roadmap-body);line-height:1.6;font-size:.95rem;
+}
+.roadmap-card-rule{
+  border:0;height:1px;background:var(--roadmap-card-border);
+  margin:1.15rem 0 1rem;
+}
+.roadmap-card-items{
+  list-style:none;margin:0;padding:0;
+  font-size:.9rem;line-height:1.55;color:var(--roadmap-body);
+}
+.roadmap-card-items li{
+  position:relative;padding:.28rem 0 .28rem 1.35rem;
+}
+.roadmap-card-items li::before{
+  content:"";position:absolute;left:0;top:.45em;
+  width:.55rem;height:.3rem;border-left:2px solid #2E7A55;
+  border-bottom:2px solid #2E7A55;transform:rotate(-45deg);
+}
+.roadmap-close{
+  font-family:var(--serif);font-style:italic;font-size:1.19rem;
+  line-height:1.45;color:var(--ink);text-align:center;
+  margin:clamp(1.75rem,4vw,2.5rem) auto 0;max-width:36rem;
   text-wrap:balance;
 }
-.roadmap-phases{
-  --roadmap-badge:2.35rem;
-  list-style:none;margin:0;padding:0;
-  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:clamp(.65rem,1.5vw,1.1rem);
-  position:relative;
-}
-.roadmap-phases::before{
-  content:"";position:absolute;z-index:0;pointer-events:none;
-  top:calc(var(--roadmap-badge) / 2 - 1px);
-  left:calc(16.66% + var(--roadmap-badge) / 2);
-  right:calc(16.66% + var(--roadmap-badge) / 2);
-  height:2px;
-  background:repeating-linear-gradient(
-    90deg,
-    var(--rule) 0,var(--rule) 6px,
-    transparent 6px,transparent 11px
-  );
-  opacity:.95;
-}
-@media(max-width:860px){
-  .roadmap-phases{
-    grid-template-columns:1fr;gap:0;
-    padding-left:calc(var(--roadmap-badge) + .85rem);
-  }
-  .roadmap-phases::before{
-    top:calc(var(--roadmap-badge) / 2);
-    bottom:calc(var(--roadmap-badge) / 2);
-    left:calc(var(--roadmap-badge) / 2 - 1px);
-    right:auto;width:2px;height:auto;
-    background:repeating-linear-gradient(
-      180deg,
-      var(--rule) 0,var(--rule) 6px,
-      transparent 6px,transparent 11px
-    );
-  }
-}
-.roadmap-phase{position:relative;z-index:1;margin:0}
-@media(max-width:860px){
-  .roadmap-phase{padding-bottom:clamp(1.1rem,2.5vw,1.5rem)}
-  .roadmap-phase:last-child{padding-bottom:0}
-}
-.roadmap-station{
-  height:100%;
-  background:var(--mist);
-  border:1px solid var(--rule);
-  border-radius:4px;
-  padding:clamp(.95rem,2.2vw,1.2rem) clamp(.85rem,2vw,1.05rem) clamp(1rem,2.2vw,1.15rem);
-}
-.roadmap-num{
-  display:flex;align-items:center;justify-content:center;
-  width:var(--roadmap-badge);height:var(--roadmap-badge);
-  margin:0 auto .65rem;
-  border-radius:50%;
-  font-family:var(--serif);font-weight:700;font-size:1.05rem;
-  color:#fff;background:var(--green);
-  box-shadow:0 0 0 3px var(--page),0 0 0 4px rgba(46,122,85,.22);
-}
-@media(max-width:860px){
-  .roadmap-num{
-    position:absolute;
-    left:calc(-1 * (var(--roadmap-badge) + .85rem));
-    top:1rem;margin:0;
-  }
-  .roadmap-station{margin-left:0}
-}
-.roadmap-phase .phase-label{
-  font-family:var(--serif);font-weight:600;color:var(--ink);
-  font-size:clamp(1rem,1.5vw,1.12rem);line-height:1.25;
-  margin:0 0 .75rem;text-align:center;
-}
-@media(max-width:860px){.roadmap-phase .phase-label{text-align:left}}
-.roadmap-phase ul{
-  list-style:none;margin:0;padding:.75rem 0 0;
-  font-size:.88rem;line-height:1.45;color:var(--grey);
-  border-top:1px solid var(--rule);
-}
-.roadmap-phase li{padding:.32rem 0}
 
 /* ---------- letter: family photo + closing CTA ---------- */
 .family{margin:1.35rem auto 1.6rem;max-width:17rem}
@@ -784,7 +775,7 @@ body{text-align:center}
     </figure>
 
     <ul class="sub-bullets measure" aria-label="How proactive owners take shape">
-      <li><strong>Incentivize Retention:</strong> My custom incentive plan motivates your Account Managers to take ownership of client retention and account growth.</li>
+      <li><strong>Incentivize Retention:</strong> My Win-Win Retention Incentive Plan motivates your Account Managers to take ownership of client retention and account growth.</li>
       <li><strong>Identify Signals:</strong> I train your team to spot hidden signals of churn 30, 60, and 90 days before clients leave, along with growth signals.</li>
       <li><strong>Take Proactive Action:</strong> I coach your team to turn those signals into action that retains clients and grows accounts, rewarding them for the results they create for you.</li>
     </ul>
@@ -808,44 +799,53 @@ body{text-align:center}
     </figure>
 
 
-    <section class="roadmap" aria-labelledby="roadmap-heading">
-      <div class="measure">
-        <h3 class="roadmap-title" id="roadmap-heading">The roadmap — how I install this system</h3>
-        <p class="roadmap-lede">I roll this out in three phases so your team builds the foundation, transforms how they work, and turns retention into profit.</p>
-      </div>
-      <ol class="roadmap-phases" aria-label="Installation phases">
-        <li class="roadmap-phase">
-          <div class="roadmap-station">
-            <span class="roadmap-num" aria-hidden="true">1</span>
-            <p class="phase-label">Phase 1: Foundation</p>
-            <ul>
+    <section class="roadmap" id="roadmap" aria-labelledby="roadmap-heading">
+      <div class="roadmap-inner">
+        <h2 class="roadmap-h2" id="roadmap-heading">The Roadmap to <span class="red">97%</span></h2>
+        <p class="roadmap-intro">I install the formula in three phases. First we build the foundation, then your team goes proactive, then that trust turns into profit. Each phase builds on the one before it.</p>
+        <figure class="roadmap-diagram">
+          <img src="media/roadmap-97.png" width="1024" height="473" alt="The roadmap as three rising steps: Foundation, Transformation and Profitability, with the 97% flag planted where Profitability begins. An arrow underneath runs from Reactive to Proactive.">
+        </figure>
+        <ol class="roadmap-cards">
+          <li class="roadmap-card">
+            <span class="roadmap-card-num" aria-hidden="true">1</span>
+            <p class="roadmap-card-phase">Phase 1</p>
+            <h3 class="roadmap-card-title">Foundation</h3>
+            <p class="roadmap-card-tag">Know your real numbers.</p>
+            <p class="roadmap-card-desc">We find exactly where customers are slipping away, then give your team the training and the dashboard to see it for themselves.</p>
+            <hr class="roadmap-card-rule" aria-hidden="true">
+            <ul class="roadmap-card-items">
               <li>Complete Retention Audit</li>
               <li>Churn Prevention Training</li>
               <li>Dashboard Set-up (KPI Tracking)</li>
               <li>Customer System Revitalization</li>
               <li>7 Signals Training</li>
             </ul>
-          </div>
-        </li>
-        <li class="roadmap-phase">
-          <div class="roadmap-station">
-            <span class="roadmap-num" aria-hidden="true">2</span>
-            <p class="phase-label">Phase 2: Transformation</p>
-            <ul>
+          </li>
+          <li class="roadmap-card">
+            <span class="roadmap-card-num" aria-hidden="true">2</span>
+            <p class="roadmap-card-phase">Phase 2</p>
+            <h3 class="roadmap-card-title">Transformation</h3>
+            <p class="roadmap-card-tag">Go proactive.</p>
+            <p class="roadmap-card-desc">Your Account Managers stop reacting and start acting on signals, and they get paid for the results they create. This is the climb to 97%.</p>
+            <hr class="roadmap-card-rule" aria-hidden="true">
+            <ul class="roadmap-card-items">
               <li>Intelligence &amp; Signals Flow</li>
               <li>Objective Health Scores</li>
-              <li>Commission Plan</li>
+              <li>Win-Win Retention Incentive Plan</li>
               <li>Shift to Proactive</li>
               <li>Success Plans</li>
-              <li>QVRs</li>
+              <li>Quarterly Value Reviews (QVRs)</li>
             </ul>
-          </div>
-        </li>
-        <li class="roadmap-phase">
-          <div class="roadmap-station">
-            <span class="roadmap-num" aria-hidden="true">3</span>
-            <p class="phase-label">Phase 3: Profitability</p>
-            <ul>
+          </li>
+          <li class="roadmap-card">
+            <span class="roadmap-card-num" aria-hidden="true">3</span>
+            <p class="roadmap-card-phase">Phase 3</p>
+            <h3 class="roadmap-card-title">Profitability</h3>
+            <p class="roadmap-card-tag">Turn trust into profit.</p>
+            <p class="roadmap-card-desc">Once you&apos;re at <span class="red">97%</span>, your team turns that trust into growth from the customers you already have, without adding headcount.</p>
+            <hr class="roadmap-card-rule" aria-hidden="true">
+            <ul class="roadmap-card-items">
               <li>NPS &amp; CSAT Cadence</li>
               <li>Referrals</li>
               <li>Reviews</li>
@@ -853,9 +853,10 @@ body{text-align:center}
               <li>Expansion</li>
               <li>CSM Efficiency</li>
             </ul>
-          </div>
-        </li>
-      </ol>
+          </li>
+        </ol>
+        <p class="roadmap-close">Every business moves at its own pace, but nobody skips a phase. That&apos;s why the results hold.</p>
+      </div>
     </section>
 
     <div class="flywheel-cta-wrap measure">
